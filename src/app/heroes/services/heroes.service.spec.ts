@@ -42,7 +42,6 @@ describe('HeroesService', () => {
 
     it('should return all heroes', () => {
       cut.getHeroes().subscribe(heroes => {
-        console.log({heroes})
         expect(heroes.length).toBe(2);
         expect(heroes).toEqual(heroesMock);
       });
@@ -52,5 +51,32 @@ describe('HeroesService', () => {
       expect(req.request.method).toBe('GET');
       req.flush(heroesMock);
     });
+  });
+
+  describe('getHero', () => {
+    it('should return null for a wrong id param', () => {
+      cut.getHero('test').subscribe(hero => {
+        expect(hero).toBeNull();
+      });
+
+      const req = httpMock.expectOne(`${basePath}/heroes/test`);
+      expect(req.request.method).toEqual('GET');
+      req.flush(null);
+    });
+
+    it('should return an hero for a correct id param', () => {
+      const heroMock = {
+        id: '1',
+        superhero: 'test'
+      } as Hero;
+
+      cut.getHero('test').subscribe(hero => {
+        expect(hero).toBe(heroMock);
+      });
+
+      const req = httpMock.expectOne(`${basePath}/heroes/test`);
+      expect(req.request.method).toEqual('GET');
+      req.flush(heroMock);
+    })
   });
 });
