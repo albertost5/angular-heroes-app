@@ -28,7 +28,7 @@ describe('HeroesService', () => {
     expect(cut).toBeTruthy();
   });
 
-  describe('getHeroes',() => {
+  describe('getHeroes', () => {
     const heroesMock: Hero[] = [
       {
         id: "1",
@@ -78,5 +78,37 @@ describe('HeroesService', () => {
       expect(req.request.method).toEqual('GET');
       req.flush(heroMock);
     })
+  });
+
+  describe('getSuggestions', () => {
+    it('should return an empty array for a wrong search term', () => {
+      const searchTerm: string = 'asdf';
+
+      cut.getSuggestions(searchTerm).subscribe(heroes => {
+        expect(heroes).toHaveSize(0);
+      });
+
+      const req = httpMock.expectOne(`${basePath}/heroes?q=${searchTerm}&_limit=6`);
+      expect(req.request.method).toEqual('GET');
+      req.flush([]);
+    });
+
+    it('should return an array of heroes for a correct search term', () => {
+      const searchTerm: string = 'b';
+      const heroesMock = [
+        {id: '1'},
+        {id: '2'},
+        {id: '3'}
+      ] as Hero[];
+
+      cut.getSuggestions(searchTerm).subscribe(heroes => {
+        expect(heroes).toHaveSize(3);
+        expect(heroes).toEqual(heroesMock)
+      });
+
+      const req = httpMock.expectOne(`${basePath}/heroes?q=${searchTerm}&_limit=6`);
+      expect(req.request.method).toEqual('GET');
+      req.flush(heroesMock);
+    });
   });
 });

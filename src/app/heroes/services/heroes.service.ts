@@ -20,9 +20,15 @@ export class HeroesService {
     return this.http.get<Hero[]>(`${this.basePath}/heroes`);
   }
 
-  getHero(id: string): Observable<Hero | undefined>{
+  getHero(id: string): Observable<Hero | undefined> {
     return this.http.get<Hero>(`${this.basePath}/heroes/${id}`).pipe(
       catchError((error) => of(undefined))
+    );
+  }
+
+  getSuggestions(query: string): Observable<Hero[]> {
+    return this.http.get<Hero[]>(`${this.basePath}/heroes?q=${query}&_limit=6`).pipe(
+      catchError((error) => of([]))
     );
   }
 }
