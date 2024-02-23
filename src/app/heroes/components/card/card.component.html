@@ -3,11 +3,11 @@
     <mat-card-title>{{ hero.superhero }}</mat-card-title>
   </mat-card-header>
 
-  <!-- @TODO: img -->
+  <img mat-card-image [src]='hero | heroImg' [alt]='hero.superhero'>
 
   <mat-card-content class='mt-2'>
     <h4>{{ hero.publisher }}</h4>
-    <p>
+    <p class='card-text'>
       <strong>First appearance</strong> {{ hero.first_appearance }}
       <br>
       <mat-chip-listbox>
