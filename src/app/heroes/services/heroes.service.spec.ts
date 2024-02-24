@@ -51,6 +51,18 @@ describe('HeroesService', () => {
       expect(req.request.method).toBe('GET');
       req.flush(heroesMock);
     });
+
+    it('should return an empty array if there is an error', () => {
+      cut.getHeroes().subscribe(heroes => {
+        expect(heroes.length).toBe(0);
+        expect(heroes).toEqual([]);
+      });
+
+      const req = httpMock.expectOne(`${basePath}/heroes`);
+
+      expect(req.request.method).toBe('GET');
+      req.flush([]);
+    });
   });
 
   describe('getHero', () => {

@@ -17,7 +17,9 @@ export class HeroesService {
   }
 
   getHeroes(): Observable<Hero[]> {
-    return this.http.get<Hero[]>(`${this.basePath}/heroes`);
+    return this.http.get<Hero[]>(`${this.basePath}/heroes`).pipe(
+      catchError(err => of([]))
+    );
   }
 
   getHero(id: string): Observable<Hero | undefined> {
