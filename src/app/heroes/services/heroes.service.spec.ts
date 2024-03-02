@@ -1,7 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 
 import {HeroesService} from './heroes.service';
-import {Hero} from '../interfaces/hero.interface';
+import {Hero, UpdateHeroDto} from '../interfaces/hero.interface';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {environments} from '../../../environments/environments';
 
@@ -115,12 +115,60 @@ describe('HeroesService', () => {
 
       cut.getSuggestions(searchTerm).subscribe(heroes => {
         expect(heroes).toHaveSize(3);
-        expect(heroes).toEqual(heroesMock)
+        expect(heroes).toEqual(heroesMock);
       });
 
       const req = httpMock.expectOne(`${basePath}/heroes?q=${searchTerm}&_limit=6`);
       expect(req.request.method).toEqual('GET');
       req.flush(heroesMock);
+    });
+  });
+
+  describe('addHero', ()=> {
+    it('should create a new hero', () => {
+      const heroMock = {
+        id: 'test'
+      } as Hero;
+
+      cut.addHero(heroMock).subscribe(hero => {
+        expect(hero).toEqual(heroMock);
+      });
+
+      const req = httpMock.expectOne(`${basePath}/heroes`);
+      expect(req.request.method).toEqual('POST');
+      req.flush(heroMock);
+    });
+  });
+
+  describe('updateHero', () => {
+
+    it('should throw an error if the id is not given', () => {
+      const id = '';
+      const updateHeroDto = { superhero: 'Superman' };
+
+      expect(() => {
+        cut.updateHero(id, updateHeroDto);
+      }).toThrowError();
+    });
+
+    it('should update the hero', () => {
+      const heroMock = {
+        id: 'test',
+        superhero: 'test1'
+      } as UpdateHeroDto;
+
+      const expectedHero = {
+        ...heroMock,
+        superhero: 'test2'
+      } as Hero;
+
+      cut.updateHero('test', {superhero: 'test2'}).subscribe(heroUpdated => {
+        expect(heroUpdated).toEqual(expectedHero);
+      });
+
+      const req = httpMock.expectOne(`${basePath}/heroes/test`);
+      expect(req.request.method).toEqual('PATCH');
+      req.flush(expectedHero);
     });
   });
 });
