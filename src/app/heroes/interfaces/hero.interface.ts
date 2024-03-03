@@ -11,7 +11,7 @@ export interface Hero {
 export interface CreateHeroDto extends Omit<Hero, 'id'> {
 }
 
-export interface UpdateHeroDto extends Partial<Hero> {
+export enum Publisher {
+  DC = 'DC Comics',
+  Marvel = 'Marvel Comics'
 }
-
-export type Publisher = "DC Comics" | "Marvel Comics";

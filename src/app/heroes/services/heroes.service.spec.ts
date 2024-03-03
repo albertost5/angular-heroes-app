@@ -143,11 +143,10 @@ describe('HeroesService', () => {
   describe('updateHero', () => {
 
     it('should throw an error if the id is not given', () => {
-      const id = '';
-      const updateHeroDto = { superhero: 'Superman' };
+      const updateHeroDto = {id: '', superhero: 'Superman' } as Hero;
 
       expect(() => {
-        cut.updateHero(id, updateHeroDto);
+        cut.updateHero(updateHeroDto);
       }).toThrowError();
     });
 
@@ -162,7 +161,7 @@ describe('HeroesService', () => {
         superhero: 'test2'
       } as Hero;
 
-      cut.updateHero('test', {superhero: 'test2'}).subscribe(heroUpdated => {
+      cut.updateHero(heroMock).subscribe(heroUpdated => {
         expect(heroUpdated).toEqual(expectedHero);
       });
 
