@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {catchError, Observable, of} from 'rxjs';
+import {catchError, map, Observable, of} from 'rxjs';
 import {CreateHeroDto, Hero} from '../interfaces/hero.interface';
 import {HttpClient} from '@angular/common/http';
 import {environments} from '../../../environments/environments';
@@ -42,5 +42,12 @@ export class HeroesService {
     if (!updateHeroDto.id) throw new Error('The hero id is required!');
 
     return this.http.patch<Hero>(`${this.basePath}/heroes/${updateHeroDto.id}`, updateHeroDto);
+  }
+
+  deleteHeroById(id: string): Observable<boolean> {
+    return this.http.delete(`${this.basePath}/heroes/${id}`).pipe(
+      map(rdo => !!rdo),
+      catchError((error) => of(false))
+    )
   }
 }

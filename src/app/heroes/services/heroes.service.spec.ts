@@ -1,7 +1,7 @@
 import {TestBed} from '@angular/core/testing';
 
 import {HeroesService} from './heroes.service';
-import {Hero, UpdateHeroDto} from '../interfaces/hero.interface';
+import {Hero} from '../interfaces/hero.interface';
 import {HttpClientTestingModule, HttpTestingController} from '@angular/common/http/testing';
 import {environments} from '../../../environments/environments';
 
@@ -154,7 +154,7 @@ describe('HeroesService', () => {
       const heroMock = {
         id: 'test',
         superhero: 'test1'
-      } as UpdateHeroDto;
+      } as Hero;
 
       const expectedHero = {
         ...heroMock,
@@ -168,6 +168,42 @@ describe('HeroesService', () => {
       const req = httpMock.expectOne(`${basePath}/heroes/test`);
       expect(req.request.method).toEqual('PATCH');
       req.flush(expectedHero);
+    });
+  });
+
+  describe('deleteHeroById', () => {
+    it('should return false if the here was not found', () => {
+      cut.deleteHeroById('test').subscribe(res => {
+        expect(res).toBeDefined();
+        expect(res).toBeFalse();
+      });
+
+      const req = httpMock.expectOne(`${basePath}/heroes/test`);
+      expect(req.request.method).toEqual('DELETE');
+      req.flush(false);
+    });
+
+    it('should return false when there is an error during deletion', () => {
+      cut.deleteHeroById('').subscribe(result => {
+        expect(result).toBe(false);
+      });
+
+      const req = httpMock.expectOne(`${basePath}/heroes/`);
+      expect(req.request.method).toBe('DELETE');
+
+      req.flush('Id required!', { status: 404, statusText: 'Not Found' });
+    });
+
+    it('should return true if the hero was deleted successfully',() => {
+
+      cut.deleteHeroById('test').subscribe(res => {
+        expect(res).toBeDefined();
+        expect(res).toBeTrue();
+      });
+
+      const req = httpMock.expectOne(`${basePath}/heroes/test`);
+      expect(req.request.method).toEqual('DELETE');
+      req.flush(true);
     });
   });
 });
