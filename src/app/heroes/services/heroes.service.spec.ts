@@ -13,8 +13,7 @@ describe('HeroesService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [HeroesService]
+      imports: [HttpClientTestingModule]
     });
     cut = TestBed.inject(HeroesService);
     httpMock = TestBed.inject(HttpTestingController);
